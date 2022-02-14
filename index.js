@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("<h2>Hi There ...</h2>");
+  res.send("<h2>Hi There</h2>");
 });
 
 const port = process.env.PORT || 3000;
@@ -46,5 +46,15 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 //to stop everything : docker-compose down -v
 //when  we want to force the build of an image (one we changed the image) : docker-compose up -d --build
 
-//1h20 - how to do in production ?
+//Go to production
+//can crete 2 dockerfile or devide the docker-compose file in two
+//For dev env (-f = file) : docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+//to stop it : docker-compose -f docker-compose.yml -f docker-compose.dev.yml down -v
+//For prod env : docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+//to stop it : docker-compose -f docker-compose.yml -f docker-compose.prod.yml down -v
+//everytime we change our code we have to rebuild the image --build : docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+//nodemon is only usefull for dev env so need to remove it in prod.
+
+//1h45 - add a second container mongo
 //https://www.youtube.com/watch?v=9zUHg7xjIqQ
