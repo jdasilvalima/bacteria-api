@@ -12,6 +12,8 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 
 //node index.js >>> http://localhost:3000/
 
+// up down dev prod
+
 //create Dockerfile
 //create or update docker image with a name : "docker build -t node-app-image ."
 //give all docker images : docker image ls
@@ -56,5 +58,12 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 
 //nodemon is only usefull for dev env so need to remove it in prod.
 
-//1h45 - add a second container mongo
+//add mongo DB
+//we do not customize the image for mongodb so we just take one existing in Docker Hub
+//add mongo db in the docker file
+//in order to not loose the data in mongo DB after we delete the docker we need to change docker-compose by creating a volume with a name (to keep data)
+//connect to mongo client => docker exec -it nodejs-mongo-1 mongo -u "jdslvl" -p "mypassword"
+//WARNING do not use -v to not remove the volume when delete the docker => docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+
+//2h01:57 - connect our app to mongo db
 //https://www.youtube.com/watch?v=9zUHg7xjIqQ
