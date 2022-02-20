@@ -1,10 +1,37 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const {
+  MONGO_USER,
+  MONGO_PASSWORD,
+  MONGO_IP,
+  MONGO_PORT,
+} = require("./config/config");
+
+const bacteriaRouter = require("./routes/bacteriaRoutes");
 
 const app = express();
+
+const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
+//ip address at the end + mongo default port
+
+const connectWithRetry = () => {
+  mongoose
+    .connect(mongoURL)
+    .then(() => console.log("succesfullt connected to DB"))
+    .catch((e) => {
+      console.log(e);
+      setTimeout(connectWithRetry, 5000); //retry until success - do not rely only on docker
+    });
+};
+
+connectWithRetry();
 
 app.get("/", (req, res) => {
   res.send("<h2>Hi There</h2>");
 });
+
+//localhost:3000/api/v1/bacterias
+app.use("/api/v1/bacterias", bacteriaRouter);
 
 const port = process.env.PORT || 3000;
 
@@ -63,7 +90,17 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 //add mongo db in the docker file
 //in order to not loose the data in mongo DB after we delete the docker we need to change docker-compose by creating a volume with a name (to keep data)
 //connect to mongo client => docker exec -it nodejs-mongo-1 mongo -u "jdslvl" -p "mypassword"
-//WARNING do not use -v to not remove the volume when delete the docker => docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+//WARNING do not use -v to not remove the volume when delete the docker (in order to keep the db)=> docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
 
-//2h01:57 - connect our app to mongo db
+//mongoose helps to talk easily to the DB
+//update index.js file with mongoose settings
+//to know the ip address => docker ps / to know more information : docker inspect nodejs-node-app-1 (has Networks information with IP address)
+// docker logs +  dockername
+//Be careful => every time a docker stop it changes its IP address.
+//=> better to refer to the service name (eg mongo) instead to use the ip address
+
+//Tell to docker to run first Mongo before Node.js => depends_on: - mongo
+//start only node-app application => docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --no-deps node-app
+
+//2h48:04 - postman test - docker running
 //https://www.youtube.com/watch?v=9zUHg7xjIqQ
