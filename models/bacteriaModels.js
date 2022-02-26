@@ -4,6 +4,11 @@ const bacteriaSchema = new mongoose.Schema({
   name: {
     type: String,
     require: [true, "Bacteria must have a name"],
+    unique: true,
+  },
+  type: {
+    type: String,
+    require: [true, "Bacteria must have a type"],
   },
   o2requirement: {
     type: String,

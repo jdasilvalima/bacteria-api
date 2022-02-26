@@ -26,6 +26,9 @@ const connectWithRetry = () => {
 
 connectWithRetry();
 
+//to read json body in request
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("<h2>Hi There</h2>");
 });
@@ -90,7 +93,7 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 //add mongo db in the docker file
 //in order to not loose the data in mongo DB after we delete the docker we need to change docker-compose by creating a volume with a name (to keep data)
 //connect to mongo client => docker exec -it nodejs-mongo-1 mongo -u "jdslvl" -p "mypassword"
-//WARNING do not use -v to not remove the volume when delete the docker (in order to keep the db)=> docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+//WARNING do not use -v to not remove the volume when delete the docker (in order to keep the db)=> docker-compose -f docker-compose.yml -f docker-compose.dev.yml down // up -d
 
 //mongoose helps to talk easily to the DB
 //update index.js file with mongoose settings
@@ -101,6 +104,3 @@ app.listen(port, () => console.log(`listening on port ${port}`));
 
 //Tell to docker to run first Mongo before Node.js => depends_on: - mongo
 //start only node-app application => docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --no-deps node-app
-
-//2h48:04 - postman test - docker running
-//https://www.youtube.com/watch?v=9zUHg7xjIqQ
